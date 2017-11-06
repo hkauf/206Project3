@@ -80,7 +80,7 @@ def get_user_tweets(user):
 # Write an invocation to the function for the "umich" user timeline and 
 # save the result in a variable called umich_tweets:
 
-umich_tweets = get_user_tweets('umich')
+umich_tweets = get_user_tweets('@umich')[:21]
 
 
 ## Task 2 - Creating database and loading data into database
@@ -90,7 +90,8 @@ umich_tweets = get_user_tweets('umich')
 # NOTE: For example, if the user with the "TedXUM" screen name is 
 # mentioned in the umich timeline, that Twitter user's info should be 
 # in the Users table, etc.
-
+conn =sqlite3.connect('206_APIsAndDBs.sqlite')
+cur = conn.cursor()
 
 
 ## You should load into the Tweets table: 
@@ -98,8 +99,9 @@ umich_tweets = get_user_tweets('umich')
 # umich timeline.
 # NOTE: Be careful that you have the correct user ID reference in 
 # the user_id column! See below hints.
-
-
+cur.execute('DROP TABLE IF EXISTS Tweets')
+cur.execute('CREATE TABLE  Tweets (Tweets TEXT, Users TEXT')
+ 
 ## HINT: There's a Tweepy method to get user info, so when you have a 
 ## user id or screenname you can find alllll the info you want about 
 ## the user.
