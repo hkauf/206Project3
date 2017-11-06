@@ -55,19 +55,32 @@ try:
 	cache_file.close() #close file
 	CACHE_DICTION = json.loads(cache_contents) #loading contents of file
 except:
-	CACHE_DICTION= {} #Dictionarys
+	CACHE_DICTION= {} #cache Dictionary
 
 
 # Define your function get_user_tweets here:
 
-def get_user_tweets():
+def get_user_tweets(user):
+	if user in CACHE_DICTION:
+		print('using cache...')
+		results = CACHE_DICTION[user]
+	else:
+		print('fetching data...')
+		results = api.user_timeline(user)
+
+		CACHE_DICTION[user] = results
+		wfile = open(CACHE_FNAME, 'w')
+		wfile.write(json.dumps(CACHE_DICTION))
+		wfile.close()
+
+	return results
 
 
 
 # Write an invocation to the function for the "umich" user timeline and 
 # save the result in a variable called umich_tweets:
 
-
+umich_tweets = get_user_tweets('umich')
 
 
 ## Task 2 - Creating database and loading data into database
