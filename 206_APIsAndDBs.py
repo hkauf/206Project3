@@ -66,7 +66,7 @@ def get_user_tweets(user):
 		results = CACHE_DICTION[user]
 	else:
 		print('fetching data...')
-		results = api.user_timeline(user)
+		results = api.user_timeline(user, count = 20)
 
 		CACHE_DICTION[user] = results
 		wfile = open(CACHE_FNAME, 'w')
@@ -74,14 +74,10 @@ def get_user_tweets(user):
 		wfile.close()
 
 	return results
-
-
-
 # Write an invocation to the function for the "umich" user timeline and 
 # save the result in a variable called umich_tweets:
 
-umich_tweets = get_user_tweets('@umich')[:21]
-
+umich_tweets = get_user_tweets('@UMich')
 
 ## Task 2 - Creating database and loading data into database
 ## You should load into the Users table:
@@ -100,12 +96,13 @@ cur = conn.cursor()
 # NOTE: Be careful that you have the correct user ID reference in 
 # the user_id column! See below hints.
 cur.execute('DROP TABLE IF EXISTS Tweets')
-cur.execute('CREATE TABLE  Tweets (Tweets TEXT, Users TEXT')
+cur.execute('CREATE TABLE Tweets (tweet_id TEXT, text TEXT, user_posted TEXT, time_posted TIMESTAMP, retweets NUMBER)')
  
 ## HINT: There's a Tweepy method to get user info, so when you have a 
 ## user id or screenname you can find alllll the info you want about 
 ## the user.
-
+cur.execute('SELECT * FROM Tweets')
+conn.commit()
 ## HINT: The users mentioned in each tweet are included in the tweet 
 ## dictionary -- you don't need to do any manipulation of the Tweet 
 ## text to find out which they are! Do some nested data investigation 
@@ -155,6 +152,8 @@ joined_data = True
 joined_data2 = True
 
 
+cur.close()
+conn.close()
 ### IMPORTANT: MAKE SURE TO CLOSE YOUR DATABASE CONNECTION AT THE END 
 ### OF THE FILE HERE SO YOU DO NOT LOCK YOUR DATABASE (it's fixable, 
 ### but it's a pain). ###
