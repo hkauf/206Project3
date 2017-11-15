@@ -105,12 +105,14 @@ user_idnumbers = [88836132]
 for tweets in umich_tweets:
 	for user in tweets['entities']['user_mentions']:
 		user_idnumbers.append((user['id']))
+
 for userid in user_idnumbers:
 	if userid not in CACHE_DICTION:
 		CACHE_DICTION[userid] = api.get_user(userid)
 		cache_file = open(CACHE_FNAME, 'w')
 		cache_file.write(json.dumps(CACHE_DICTION))
 		cache_file.close()
+	
 	user_info = CACHE_DICTION[userid]
 	table_info = (str(user_info['id']), user_info['screen_name'], user_info['favourites_count'], user_info['description'])
 	cur.execute('INSERT OR IGNORE INTO Users(user_id, screen_name, num_favs, description) VALUES(?, ?, ?, ?)', table_info)
@@ -175,7 +177,6 @@ favorites = []
 cur.execute('SELECT description FROM Users WHERE num_favs> 500')
 for datainfo in cur:
 	favorites.append(str(datainfo))
-
 print(favorites)
 
 # Make a query using an INNER JOIN to get a list of tuples with 2 
@@ -196,7 +197,7 @@ joined_data2 = []
 cur.execute('SELECT screen_name, text FROM Users INNER JOIN Tweets on Tweets.user_posted = Users.user_id ORDER BY Tweets.retweets')
 for data_var in cur:
 	joined_data2.append(data_var)
-print(joined_data2)
+print(joined_data2)  
 
 cur.close()
 conn.close()
